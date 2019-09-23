@@ -1,0 +1,18 @@
+# IDE Settings
+.vscode
+.vs
+
+# Build system
+build/*
+bin/
+out/
+
+# Externals
+ext/sdl/*
+!sdl2-config.cmake
+
+# Download instructions
+!DOWNLOAD.md
+
+# Keepers
+!.gitkeep
