@@ -9,6 +9,8 @@ out/
 
 # Externals
 ext/sdl/*
+ext/cglm/*
+!cglm-config.cmake
 !sdl2-config.cmake
 
 # Download instructions
