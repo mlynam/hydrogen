@@ -15,7 +15,7 @@ include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${CGLM_INCLUDE_DIRS})
 
 # Exe
-add_executable(Main src/main.c src/world.c inc/game_object.h)
+add_executable(Main src/main.c src/world.c src/game_object.c)
 
 # Ext linking
 target_link_libraries(Main ${SDL2_LIBRARIES})

@@ -1,11 +1,18 @@
-#ifndef game_object_h
-#define game_object_h
+#ifndef GAME_OBJECT_H
+#define GAME_OBJECT_H
 
 #include "vec3.h"
+#include "systems.h"
 
-typedef struct GameObject
+typedef struct _GameObject
 {
   vec3 position;
-} H_GameObject;
+  vec3 scale;
+  vec3 rotation;
+  bool active;
+  SystemTypes systems;
+} GameObject;
+
+GameObject _CreateDefaultGameObject();
 
 #endif

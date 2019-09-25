@@ -15,10 +15,10 @@ int _cdecl main(int argc, char *argv[])
 
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
-  H_CreateWorld();
+  World *world = CreateWorld(10000);
 
-  H_GameObject *first = H_CreateGameObject();
-  H_GameObject *second = H_CreateGameObject();
+  GameObject *first = CreateGameObject(world);
+  GameObject *second = CreateGameObject(world);
 
   while (SDL_TRUE)
   {
@@ -47,16 +47,17 @@ int _cdecl main(int argc, char *argv[])
       r *= -1;
     }
 
-    second->position[0] = r;
+    first->position[0] = r;
 
     SDL_SetRenderDrawColor(renderer, r * 255, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
   }
 
-  H_DestroyGameObject(second);
+  DestroyGameObject(first, world);
 
-  H_DestroyWorld();
+  GameObject *recycled = CreateGameObject(world);
+  DestroyWorld(world);
 
   SDL_DestroyWindow(window);
   SDL_Quit();

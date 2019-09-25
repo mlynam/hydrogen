@@ -1,34 +1,59 @@
 #include "world.h"
 #include "game_object.h"
 
-size_t WORLD_OBJECT_MAX = 1000;
-H_GameObject *WORLD_OBJECTS = NULL;
-size_t NEXT_ID = 0;
-
-H_GameObject *H_CreateGameObject()
+World *CreateWorld(int max_object_count)
 {
-  return &WORLD_OBJECTS[NEXT_ID++];
-}
+  GameObject *objects = calloc(max_object_count, sizeof(GameObject));
+  size_t *recycler = calloc(max_object_count, sizeof(size_t));
+  World init = {max_object_count, objects, 0, recycler, 0};
 
-void H_DestroyGameObject(H_GameObject *gameObject)
-{
-  size_t index = ((size_t)gameObject - (size_t)WORLD_OBJECTS) / sizeof(H_GameObject);
+  World *world = malloc(sizeof(World));
 
-  if (index >= 0 && index < WORLD_OBJECT_MAX)
+  if (world)
   {
-    WORLD_OBJECTS[index] = (H_GameObject){{0.f, 0.f, 0.f}};
+    SDL_memcpy(world, &init, sizeof(World));
   }
+
+  return world;
 }
 
-void H_CreateWorld()
+void DestroyWorld(World *world)
 {
-  WORLD_OBJECTS = calloc(WORLD_OBJECT_MAX, sizeof(H_GameObject));
+  free(world->game_objects);
+  free(world->_recycled_indexes);
+  free(world);
 }
 
-void H_DestroyWorld()
+GameObject *CreateGameObject(World *world)
 {
-  if (WORLD_OBJECTS)
+  GameObject init = _CreateDefaultGameObject();
+  GameObject *dest = NULL;
+
+  if (world->_recycled_object_count > 0)
   {
-    free(WORLD_OBJECTS);
+    size_t index = world->_recycled_indexes[world->_recycled_object_count - 1];
+    dest = &world->game_objects[index];
+
+    world->_recycled_object_count--;
+  }
+  else
+  {
+    dest = &world->game_objects[world->_next_game_object_index++];
+  }
+
+  SDL_memcpy(dest, &init, sizeof(GameObject));
+
+  return dest;
+}
+
+void DestroyGameObject(GameObject *gameObject, World *world)
+{
+  size_t start = &world->game_objects[0];
+  size_t index = ((size_t)gameObject - start) / sizeof(GameObject);
+
+  if (index >= 0 || index < world->kMaxGameObjectCount)
+  {
+    gameObject->active = false;
+    world->_recycled_indexes[world->_recycled_object_count++] = index;
   }
 }
