@@ -9,6 +9,7 @@ typedef struct _GameObject
   vec3 position;
   vec3 scale;
   vec3 rotation;
+  vec3 offset;
   bool active;
   SystemTypes systems;
 } GameObject;

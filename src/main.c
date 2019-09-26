@@ -1,5 +1,6 @@
 #include "SDL.h"
 #include "world.h"
+#include "systems_camera.h"
 
 int _cdecl main(int argc, char *argv[])
 {
@@ -16,11 +17,14 @@ int _cdecl main(int argc, char *argv[])
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
   World *world = CreateWorld(10000);
+  CameraSystem *cameras = CreateCameraSystem(world, 10);
 
   GameObject *first = CreateGameObject(world);
   GameObject *second = CreateGameObject(world);
 
-  while (SDL_TRUE)
+  Camera *camera = CreateCamera(cameras, first, GLM_VEC3_ONE);
+
+   while (SDL_TRUE)
   {
     SDL_Event event;
     if (SDL_PollEvent(&event))

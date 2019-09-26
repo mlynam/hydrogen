@@ -1,11 +1,11 @@
 #include "world.h"
 #include "game_object.h"
 
-World *CreateWorld(int max_object_count)
+World *CreateWorld(size_t max_object_count)
 {
   GameObject *objects = calloc(max_object_count, sizeof(GameObject));
-  size_t *recycler = calloc(max_object_count, sizeof(size_t));
-  World init = {max_object_count, objects, 0, recycler, 0};
+  RecycledIndex *recycler = CreateRecycledIndex(max_object_count);
+  World init = {max_object_count, objects, 0, recycler};
 
   World *world = malloc(sizeof(World));
 
@@ -19,27 +19,20 @@ World *CreateWorld(int max_object_count)
 
 void DestroyWorld(World *world)
 {
+  DestroyRecycledIndex(world->_recycler);
+
   free(world->game_objects);
-  free(world->_recycled_indexes);
   free(world);
+
+  world = NULL;
 }
 
 GameObject *CreateGameObject(World *world)
 {
   GameObject init = _CreateDefaultGameObject();
-  GameObject *dest = NULL;
+  size_t index = world->_recycler->count > 0 ? PopIndex(world->_recycler) : world->_next_game_object_index++;
 
-  if (world->_recycled_object_count > 0)
-  {
-    size_t index = world->_recycled_indexes[world->_recycled_object_count - 1];
-    dest = &world->game_objects[index];
-
-    world->_recycled_object_count--;
-  }
-  else
-  {
-    dest = &world->game_objects[world->_next_game_object_index++];
-  }
+  GameObject *dest = &world->game_objects[index];
 
   SDL_memcpy(dest, &init, sizeof(GameObject));
 
@@ -48,12 +41,17 @@ GameObject *CreateGameObject(World *world)
 
 void DestroyGameObject(GameObject *gameObject, World *world)
 {
-  size_t start = &world->game_objects[0];
-  size_t index = ((size_t)gameObject - start) / sizeof(GameObject);
+  size_t index = IndexOf(gameObject, world);
 
-  if (index >= 0 || index < world->kMaxGameObjectCount)
+  if ((index >= 0 || index < world->kMaxGameObjectCount) && PushIndex(world->_recycler, index))
   {
     gameObject->active = false;
-    world->_recycled_indexes[world->_recycled_object_count++] = index;
   }
+}
+
+size_t IndexOf(GameObject *object, World *world)
+{
+  size_t start = &world->game_objects[0];
+  size_t address = object;
+  return (address - start) / sizeof(GameObject);
 }

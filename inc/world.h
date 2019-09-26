@@ -8,20 +8,21 @@
 
 #include "SDL.h"
 #include "game_object.h"
+#include "recycled_index.h"
 
 typedef struct _World
 {
-  const int kMaxGameObjectCount;
+  const size_t kMaxGameObjectCount;
   GameObject *game_objects;
   size_t _next_game_object_index;
-  size_t *_recycled_indexes;
-  size_t _recycled_object_count;
+  RecycledIndex *_recycler;
 } World;
 
-World *CreateWorld(int max_object_count);
+World *CreateWorld(size_t max_object_count);
 void DestroyWorld(World *);
 int GetGameObjectIndex(GameObject *, World *);
 GameObject *CreateGameObject(World *);
 void DestroyGameObject(GameObject *, World *);
+size_t IndexOf(GameObject *, World *);
 
 #endif
