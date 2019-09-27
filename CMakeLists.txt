@@ -5,14 +5,16 @@ project(Hydrogen)
 SET(SDL2_DIR "${CMAKE_CURRENT_LIST_DIR}/ext/sdl")
 SET(CGLM_DIR "${CMAKE_CURRENT_LIST_DIR}/ext/cglm")
 
-# SDL
+# packages
 find_package(SDL2 REQUIRED)
 find_package(CGLM REQUIRED)
+find_package(OpenGL REQUIRED)
 
 # includes
 include_directories(inc)
 include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${CGLM_INCLUDE_DIRS})
+include_directories(${OPENGL_INCLUDE_DIRS})
 
 # Exe
 add_executable(
@@ -27,6 +29,7 @@ add_executable(
 # Ext linking
 target_link_libraries(Main ${SDL2_LIBRARIES})
 target_link_libraries(Main ${CGLM_LIBRARIES})
+target_link_libraries(Main ${OPENGL_LIBRARIES})
 
 # Post
 file(COPY ${SDL2_DIR}/lib/x64/SDL2.dll DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

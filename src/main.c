@@ -1,4 +1,7 @@
-#include "SDL.h"
+#include <SDL.h>
+#include <SDL_opengl.h>
+#include <gl/GLU.h>
+#include <stdio.h>
 #include "world.h"
 #include "systems_camera.h"
 
@@ -12,7 +15,7 @@ int _cdecl main(int argc, char *argv[])
       SDL_WINDOWPOS_UNDEFINED,
       640,
       480,
-      0);
+      SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 
@@ -24,7 +27,23 @@ int _cdecl main(int argc, char *argv[])
 
   Camera *camera = CreateCamera(cameras, first, GLM_VEC3_ONE);
 
-   while (SDL_TRUE)
+  // Setup OpenGL
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+  SDL_GLContext context = SDL_GL_CreateContext(window);
+  if (context == NULL)
+  {
+    printf("OpenGL context could not be created. SDL Error: %s\n", SDL_GetError());
+    return -1;
+  }
+
+  SDL_GL_SetSwapInterval(1);
+
+  // Render the OpenGL version
+  printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
+
+  while (SDL_TRUE)
   {
     SDL_Event event;
     if (SDL_PollEvent(&event))
@@ -53,9 +72,9 @@ int _cdecl main(int argc, char *argv[])
 
     first->position[0] = r;
 
-    SDL_SetRenderDrawColor(renderer, r * 255, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
+    glClearColor(.392f, .584f, .929f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    SDL_GL_SwapWindow(window);
   }
 
   DestroyGameObject(first, world);
@@ -63,6 +82,7 @@ int _cdecl main(int argc, char *argv[])
   GameObject *recycled = CreateGameObject(world);
   DestroyWorld(world);
 
+  SDL_GL_DeleteContext(context);
   SDL_DestroyWindow(window);
   SDL_Quit();
 
