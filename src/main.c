@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "world.h"
 #include "systems_camera.h"
+#include "yaml.h"
 
 int _cdecl main(int argc, char *argv[])
 {
@@ -62,15 +63,6 @@ int _cdecl main(int argc, char *argv[])
 
       SDL_PushEvent(&quit);
     }
-
-    float s = SDL_GetTicks() / 1000.f;
-    float r = SDL_sinf(s);
-    if (r < 0)
-    {
-      r *= -1;
-    }
-
-    first->position[0] = r;
 
     glClearColor(.392f, .584f, .929f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
