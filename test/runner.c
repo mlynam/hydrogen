@@ -9,6 +9,31 @@ START_TEST(test_game_object_default)
   GameObject object = _CreateDefaultGameObject();
 
   ck_assert_float_eq(object.position[0], 0.f);
+  ck_assert_float_eq(object.position[1], 0.f);
+  ck_assert_float_eq(object.position[2], 0.f);
+  ck_assert_float_eq(object.scale[0], 0.f);
+  ck_assert_float_eq(object.scale[1], 0.f);
+  ck_assert_float_eq(object.scale[2], 0.f);
+  ck_assert_float_eq(object.rotation[0], 0.f);
+  ck_assert_float_eq(object.rotation[1], 0.f);
+  ck_assert_float_eq(object.rotation[2], 0.f);
+  ck_assert_int_eq(object.active, true);
+  ck_assert_int_eq(object.systems, 0);
+}
+
+START_TEST(test_game_object_deserialize)
+{
+  const unsigned char *yaml =
+      "position:\n"
+      "  - 1.0\n"
+      "  - 2.0\n"
+      "  - 0.0\n"
+      "scale:\n"
+      "  - 1.0\n"
+      "  - 1.0\n"
+      "  - 1.0\n";
+
+  GameObject deserialized = DeserializeGameObject(yaml, 31);
 }
 
 Suite *CreateGameObjectSuite()
@@ -20,6 +45,7 @@ Suite *CreateGameObjectSuite()
   case_core = tcase_create("Core");
 
   tcase_add_test(case_core, test_game_object_default);
+  tcase_add_test(case_core, test_game_object_deserialize);
   suite_add_tcase(suite, case_core);
 
   return suite;
@@ -29,9 +55,6 @@ int main(int argc, char const *argv[])
 {
   if (argc != 1)
   {
-    printf_s(
-        "You must specify one suite to run:\n\tGameObject");
-
     return EXIT_FAILURE;
   }
 
@@ -42,11 +65,6 @@ int main(int argc, char const *argv[])
   if (SDL_strcmp(argv[0], "GameObject"))
   {
     suite = CreateGameObjectSuite();
-  }
-  else
-  {
-    /* code */
-    printf_s("Test suite not found.");
   }
 
   if (suite == NULL)

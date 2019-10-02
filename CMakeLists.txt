@@ -33,7 +33,6 @@ add_library(
   src/camera.c
   src/recycled_index.c
   src/systems_camera.c
-  data/object.yaml
 )
 
 # Exe
@@ -55,11 +54,15 @@ target_link_libraries(Main ${SDL2_LIBRARIES})
 target_link_libraries(Main ${CGLM_LIBRARIES})
 target_link_libraries(Main ${OPENGL_LIBRARIES})
 target_link_libraries(Main yaml)
+target_link_libraries(Library ${SDL2_LIBRARIES})
+target_link_libraries(Library ${CGLM_LIBRARIES})
+target_link_libraries(Library ${OPENGL_LIBRARIES})
 target_link_libraries(Library yaml)
 target_link_libraries(Test yaml)
 target_link_libraries(Test ${SDL2_LIBRARIES})
 target_link_libraries(Test check)
 target_link_libraries(Test Library)
+
 add_dependencies(Main yaml)
 add_dependencies(Test check)
 add_dependencies(Library yaml)

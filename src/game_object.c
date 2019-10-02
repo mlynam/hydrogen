@@ -1,7 +1,7 @@
 #include "game_object.h"
 #include "yaml.h"
 
-GameObject DeserializeGameObject(FILE *file)
+GameObject DeserializeGameObject(const unsigned char *input, size_t size)
 {
   yaml_parser_t parser;
   yaml_token_t token;
@@ -9,8 +9,7 @@ GameObject DeserializeGameObject(FILE *file)
   char key[256];
 
   yaml_parser_initialize(&parser);
-
-  yaml_parser_set_input_file(&parser, file);
+  yaml_parser_set_input_string(&parser, input, size);
 
   do
   {
@@ -21,14 +20,14 @@ GameObject DeserializeGameObject(FILE *file)
     case YAML_STREAM_START_TOKEN:
       break;
     case YAML_KEY_TOKEN:
-      SDL_strlcpy(key, token.end_mark.column - token.start_mark.column, token.data.alias.value);
+      // SDL_strlcpy(key, token.end_mark.column - token.start_mark.column, token.data.alias.value);
       break;
     case YAML_BLOCK_ENTRY_TOKEN:
       break;
     default:
       break;
     }
-  } while (token.type != YAML_STREAM_END_TOKEN);
+  } while (token.type != YAML_STREAM_END_TOKEN && parser.error == YAML_NO_ERROR);
 }
 
 GameObject _CreateDefaultGameObject()
