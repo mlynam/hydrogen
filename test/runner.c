@@ -24,16 +24,16 @@ START_TEST(test_game_object_default)
 START_TEST(test_game_object_deserialize)
 {
   const unsigned char *yaml =
-      "position:\n"
+      "position: !!seq\n"
       "  - 1.0\n"
       "  - 2.0\n"
       "  - 0.0\n"
-      "scale:\n"
+      "scale: !!seq\n"
       "  - 1.0\n"
       "  - 1.0\n"
       "  - 1.0\n";
 
-  GameObject deserialized = DeserializeGameObject(yaml, 31);
+  GameObject deserialized = DeserializeGameObject(yaml, 65);
 }
 
 Suite *CreateGameObjectSuite()
