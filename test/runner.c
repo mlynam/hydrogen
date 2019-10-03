@@ -34,6 +34,9 @@ START_TEST(test_game_object_deserialize)
       "  - 1.0\n";
 
   GameObject deserialized = DeserializeGameObject(yaml, 65);
+
+  ck_assert_float_eq(deserialized.position[1], 2.f);
+  ck_assert_float_eq(deserialized.scale[0], 1.f);
 }
 
 Suite *CreateGameObjectSuite()
@@ -53,7 +56,7 @@ Suite *CreateGameObjectSuite()
 
 int main(int argc, char const *argv[])
 {
-  if (argc != 1)
+  if (argc != 2)
   {
     return EXIT_FAILURE;
   }
@@ -62,7 +65,7 @@ int main(int argc, char const *argv[])
   Suite *suite = NULL;
   SRunner *runner;
 
-  if (SDL_strcmp(argv[0], "GameObject"))
+  if (SDL_strcmp(argv[1], "GameObject") == 0)
   {
     suite = CreateGameObjectSuite();
   }

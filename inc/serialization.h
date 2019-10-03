@@ -1,6 +1,8 @@
 #ifndef SERIALIZATION_H
 #define SERIALIZATION_H
 
+#include "yaml.h"
+
 typedef struct _SerializationState
 {
   char current_property[256];

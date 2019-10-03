@@ -27,7 +27,6 @@ int Parse(Handler *handler, yaml_parser_t *parser, yaml_event_t *event, yaml_eve
 GameObject DeserializeGameObject(const unsigned char *input, size_t size)
 {
   yaml_parser_t parser;
-  yaml_token_t token;
   yaml_event_t event;
   GameObject object;
   SerializationState state;
