@@ -36,7 +36,7 @@ SerializationError Deserialize(
   yaml_parser_initialize(&parser);
   yaml_parser_set_input_string(&parser, data, length);
 
-  return _Parse(&_Start, YAML_STREAM_END_EVENT, &state, handler);
+  return _Parse(&_Start, YAML_NO_EVENT, &state, handler);
 }
 
 int _Parse(
@@ -62,7 +62,7 @@ int _Start(SerializationState *state, DeserializeHandler *handler)
   switch (state->_event->type)
   {
   case YAML_STREAM_START_EVENT:
-    return _Parse(&_Document, YAML_DOCUMENT_END_EVENT, state, handler);
+    return _Parse(&_Document, YAML_STREAM_END_EVENT, state, handler);
   default:
     return SERIALIZATION_INVALID_GRAMMAR;
   }
@@ -107,6 +107,8 @@ int _Node(SerializationState *state, DeserializeHandler *handler)
           event->data.scalar.value,
           event->data.scalar.length + 1);
 
+      state->_last_event_type = YAML_SCALAR_EVENT;
+
       return SERIALIZATION_NO_ERROR;
     }
 
@@ -122,6 +124,12 @@ int _Node(SerializationState *state, DeserializeHandler *handler)
       int next_index;
       next_index = state->sequence.current_index + 1;
       SDL_memcpy(&state->sequence.current_index, &next_index, sizeof(int));
+    }
+    // If this scalar event follows a previous scalar event and the handler processed it, then we have
+    // resolved the RHS of a mapping
+    else if (state->mapping.current_property != '\0' && state->_last_event_type == YAML_SCALAR_EVENT)
+    {
+      SDL_memcpy(&state->mapping.rhs_resolved, &kOne, sizeof(int));
     }
 
     state->_last_event_type = YAML_SCALAR_EVENT;

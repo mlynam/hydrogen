@@ -33,6 +33,14 @@ SerializationError _DeserializeGameObject(SerializationState *state)
   {
     object->scale[index] = SDL_atof(state->scalar.value);
   }
+  else if (SDL_strcmp(property, "rotation") == 0)
+  {
+    object->rotation[index] = SDL_atof(state->scalar.value);
+  }
+  else if (SDL_strcmp(property, "offset") == 0)
+  {
+    object->offset[index] = SDL_atof(state->scalar.value);
+  }
   else if (SDL_strcmp(property, "active") == 0)
   {
     object->active = SDL_atoi(state->scalar.value);
