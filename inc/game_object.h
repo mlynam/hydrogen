@@ -16,7 +16,6 @@ typedef struct _GameObject
 } GameObject;
 
 GameObject DeserializeGameObject(const unsigned char *input, size_t size);
-int ReadHandler(void *, char *, int, int *);
 GameObject _CreateDefaultGameObject();
 
 #endif

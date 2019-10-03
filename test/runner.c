@@ -24,16 +24,26 @@ START_TEST(test_game_object_default)
 START_TEST(test_game_object_deserialize)
 {
   const unsigned char *yaml =
-      "position: !!seq\n"
+      "position:\n"
       "  - 1.0\n"
       "  - 2.0\n"
       "  - 0.0\n"
-      "scale: !!seq\n"
+      "scale:\n"
       "  - 1.0\n"
       "  - 1.0\n"
-      "  - 1.0\n";
+      "  - 1.0\n"
+      "rotation:\n"
+      "  - 0.0\n"
+      "  - 0.0\n"
+      "  - 0.0\n"
+      "offset:\n"
+      "  - 0.0\n"
+      "  - 0.0\n"
+      "  - 0.0\n"
+      "active: 1\n"
+      "systems: 0x06\n";
 
-  GameObject deserialized = DeserializeGameObject(yaml, 65);
+  GameObject deserialized = DeserializeGameObject(yaml, 155);
 
   ck_assert_float_eq(deserialized.position[1], 2.f);
   ck_assert_float_eq(deserialized.scale[0], 1.f);

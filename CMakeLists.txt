@@ -33,6 +33,7 @@ add_library(
   src/camera.c
   src/recycled_index.c
   src/systems_camera.c
+  src/serialization.c
 )
 
 # Exe
@@ -43,7 +44,9 @@ add_executable(
   src/game_object.c
   src/camera.c
   src/recycled_index.c
-  src/systems_camera.c)
+  src/systems_camera.c
+  src/serialization.c
+)
 
 add_executable(
   Test
